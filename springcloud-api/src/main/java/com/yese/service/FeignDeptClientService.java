@@ -11,7 +11,7 @@ import java.util.List;
  * 使用feign代替ribbon
  */
 //value是服务的名称,原来是在消费者的controller里写死的
-@FeignClient(value = "SPRINGCLOUD-PROVIDER-DEPT")
+@FeignClient(value = "SPRINGCLOUD-PROVIDER-DEPT", fallbackFactory = FeignDeptClientServiceFallbackFactory.class)
 @Component
 public interface FeignDeptClientService {
 

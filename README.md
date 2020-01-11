@@ -1001,9 +1001,9 @@ public class DeptController {
 
 启动测试,效果和之前使用ribbon是一样的,至此使用feign代替ribbon负载均衡完成
 
+# Hystrix服务熔断
 
-
-# springcloud-provider-dept-hystrix-8001
+## springcloud-provider-dept-hystrix-8001
 
 仿照8001创建基于hystrix的8001,修改status描述和主启动类
 
@@ -1075,7 +1075,76 @@ public class DeptController {
 
 # Hystrix服务降级
 
+## springcloud-api
 
+service包下新建
+
+```java
+package com.yese.service;
+
+import com.yese.pojo.Dept;
+import feign.hystrix.FallbackFactory;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+//实现FallbackFactory接口
+public class FeignDeptClientServiceFallbackFactory implements FallbackFactory {
+
+    //重写create方法,返回服务接口,重写接口中的方法,这里就演示一个
+    @Override
+    public FeignDeptClientService create(Throwable cause) {
+        return new FeignDeptClientService() {
+            @Override
+            public Dept getDeptById(Integer id) {
+                return new Dept()
+                        .setId(id)
+                        .setName("服务正在升级...请等待")
+                        .setDb("");
+            }
+
+            @Override
+            public List<Dept> getDepts() {
+                return null;
+            }
+
+            @Override
+            public int insertDept(Dept dept) {
+                return 0;
+            }
+
+            @Override
+            public int deleteDept(Integer id) {
+                return 0;
+            }
+
+            @Override
+            public int updateDept(Dept dept) {
+                return 0;
+            }
+        };
+    }
+}
+
+```
+
+FeignDeptClientService修改
+
+```java
+@FeignClient(value = "SPRINGCLOUD-PROVIDER-DEPT", fallbackFactory = FeignDeptClientServiceFallbackFactory.class)
+```
+
+springcloud-consumer-dept-feign-8080的yml修改
+
+```yaml
+feign:
+  hystrix:
+    #开启降级
+    enabled: true
+```
+
+启动之后正常访问效果和之前一样.如果突然关闭8001,仍能访问,返回的是预定的信息
 
 
 
