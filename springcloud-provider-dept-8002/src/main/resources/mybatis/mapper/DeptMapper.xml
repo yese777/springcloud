@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.yese.mapper.DeptMapper">
+
+    <select id="getDeptById" resultType="dept">
+        select * from dept where id=#{id};
+    </select>
+    <select id="getDepts" resultType="dept">
+        select * from dept;
+    </select>
+
+    <insert id="insertDept" parameterType="dept">
+        insert into dept (name, db) values (#{name},DATABASE());
+    </insert>
+
+    <delete id="deleteDept">
+        delete from dept where id=#{id};
+    </delete>
+
+    <update id="updateDept">
+        update dept set name = #{name} where id=#{id};
+    </update>
+
+</mapper>

@@ -1,0 +1,42 @@
+server:
+  port: 8001
+
+mybatis:
+  #配置别名,pojo的包名
+  type-aliases-package: com.yese.pojo
+  #mapper.xml文件的路径
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  #mybatis核心配置文件
+  config-location: classpath:mybatis/mybatis-config.xml
+
+spring:
+  application:
+    #应用的名称,在eureka中可以查看,服务提供者集群的时候保持服务名称一致
+    name: springcloud-provider-dept
+    #数据库相关
+  datasource:
+    #url和driverclassname是8.0以上版本的写法,新增最后的时区
+    url: jdbc:mysql://192.168.236.135:3306/DB01?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    #修改数据库连接池为druid
+    type: com.alibaba.druid.pool.DruidDataSource
+
+#配置eureka,服务注册到哪里
+eureka:
+  client:
+    service-url:
+      #单机版:defaultZone: http://localhost:7001/eureka/
+      #集群版
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+  instance:
+    #修改Status,描述
+    instance-id: springcloud-provider-dept-hystrix-8001
+    #显示服务的ip地址
+    prefer-ip-address: true
+
+#actuator包的具体配置,即点Status的链接进去的具体信息
+info:
+  app.name: springcloud-demo
+  company.name: com.yese
