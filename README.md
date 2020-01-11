@@ -1146,6 +1146,76 @@ feign:
 
 启动之后正常访问效果和之前一样.如果突然关闭8001,仍能访问,返回的是预定的信息
 
+# dashboard监控
+
+## springcloud-consumer-hystrix-dashboard-9001
+
+pom:参考8080的依赖,再添加
+
+```xml
+        <!--hystrix-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-hystrix</artifactId>
+            <version>1.4.7.RELEASE</version>
+        </dependency>
+        <!--dashboard-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-hystrix-dashboard</artifactId>
+            <version>1.4.7.RELEASE</version>
+        </dependency>
+```
+
+yml
+
+```yaml
+server:
+  port: 9001
+```
+
+创建主启动类
+
+```java
+package com.yese;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
+
+
+@SpringBootApplication
+@EnableHystrixDashboard//Dashboard开启监控页面
+public class Hystrix_Dashboard_9001_Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Hystrix_Dashboard_9001_Application.class, args);
+    }
+}
+
+```
+
+访问 http://localhost:9001/hystrix 可以看到一头猪
+
+接下来在服务里面配置,前提是要有spring-boot-starter-actuator依赖
+
+以springcloud-provider-dept-hystrix-8001为例
+
+在主启动类中添加
+
+```java
+    //Hystrix监控
+    @Bean
+    public ServletRegistrationBean hystrixMetricsStreamServlet() {
+        ServletRegistrationBean registrationBean = new ServletRegistrationBean(new HystrixMetricsStreamServlet());
+        registrationBean.addUrlMappings("/actuator/hystrix.stream");
+        return registrationBean;
+    }
+```
+
+在http://localhost:9001/hystrix页面添加http://localhost:8001/actuator/hystrix.stream
+
+访问8080的请求就会统计数据
+
 
 
 

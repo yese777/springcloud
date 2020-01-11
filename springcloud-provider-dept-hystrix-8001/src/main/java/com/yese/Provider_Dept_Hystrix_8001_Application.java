@@ -1,11 +1,14 @@
 package com.yese;
 
+import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServlet;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.cloud.client.circuitbreaker.EnableCircuitBreaker;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @MapperScan("com.yese.mapper")//扫描mapper接口
@@ -18,4 +21,11 @@ public class Provider_Dept_Hystrix_8001_Application {
         SpringApplication.run(Provider_Dept_Hystrix_8001_Application.class, args);
     }
 
+    //Hystrix监控
+    @Bean
+    public ServletRegistrationBean hystrixMetricsStreamServlet() {
+        ServletRegistrationBean registrationBean = new ServletRegistrationBean(new HystrixMetricsStreamServlet());
+        registrationBean.addUrlMappings("/actuator/hystrix.stream");
+        return registrationBean;
+    }
 }
