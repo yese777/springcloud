@@ -1,0 +1,35 @@
+server:
+  port: 9200
+
+spring:
+  application:
+    #服务的名称
+    name: springcloud-zuul
+
+#将zuul注册进eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+  instance:
+    #修改Status,描述
+    instance-id: springcloud-zuul-9200
+
+
+#actuator包的具体配置,即点Status的链接进去的具体信息
+info:
+  app.name: springcloud-zuul
+  company.name: com.yese
+
+#网关配置
+zuul:
+  routes:
+    mydept.serviceId: SPRINGCLOUD-PROVIDER-DEPT
+    #将该服务的访问地址映射
+    mydept.path: /mydept/**
+  #不能使用以下路径访问
+  #ignored-services: SPRINGCLOUD-PROVIDER-DEPT
+  #服务很多,全部影藏
+  ignored-services: "*"
+  #添加统一的前缀(可以不设置)
+  prefix: /nt

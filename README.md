@@ -530,9 +530,9 @@ public class DeptController {
 
 **测试能否调用成功**
 
+# Eureka注册中心
 
-
-# springcloud-eureka-7001
+## springcloud-eureka-7001
 
 ```xml
     <dependencies>
@@ -801,7 +801,7 @@ eureka:
 
 
 
-# 整合Ribbon
+# Ribbon负载均衡
 
 springcloud-consumer-dept-8080
 
@@ -889,9 +889,9 @@ public class ConfigBean {
 
 至此Ribbon整合完成
 
+# Feign负载均衡
 
-
-# springcloud-consumer-dept-feign-8080
+## springcloud-consumer-dept-feign-8080
 
 仿照springcloud-consumer-dept-8080创建使用Feign做负载均衡的模块
 
@@ -1215,6 +1215,92 @@ public class Hystrix_Dashboard_9001_Application {
 在http://localhost:9001/hystrix页面添加http://localhost:8001/actuator/hystrix.stream
 
 访问8080的请求就会统计数据
+
+# Zuul路由网关
+
+## springcloud-zuul-9200
+
+pom参考springcloud-consumer-hystrix-dashboard-9001,添加
+
+```xml
+        <!--zuul-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zuul</artifactId>
+            <version>1.4.7.RELEASE</version>
+        </dependency>
+```
+
+yml
+
+```yaml
+server:
+  port: 9200
+
+spring:
+  application:
+    #服务的名称
+    name: springcloud-zuul
+
+#将zuul注册进eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+  instance:
+    #修改Status,描述
+    instance-id: springcloud-zuul-9200
+
+
+#actuator包的具体配置,即点Status的链接进去的具体信息
+info:
+  app.name: springcloud-zuul
+  company.name: com.yese
+
+#网关配置
+zuul:
+  routes:
+    mydept.serviceId: SPRINGCLOUD-PROVIDER-DEPT
+    #将该服务的访问地址映射
+    mydept.path: /mydept/**
+  #不能使用以下路径访问
+  #ignored-services: SPRINGCLOUD-PROVIDER-DEPT
+  #服务很多,全部影藏
+  ignored-services: "*"
+  #添加统一的前缀(可以不设置)
+  prefix: /nt
+
+```
+
+host文件添加,模拟真实环境
+
+```
+127.0.0.1       www.yese.com
+```
+
+创建主启动类
+
+```java
+package com.yese;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
+
+
+@SpringBootApplication
+@EnableZuulProxy//开启zuul
+public class Zuul_9200_Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Zuul_9200_Application.class, args);
+    }
+}
+
+```
+
+
+
+访问 http://www.yese.com:9200/nt/mydept/dept 
 
 
 
