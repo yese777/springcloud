@@ -1,0 +1,14 @@
+#bootstrap.yml系统级别的配置
+spring:
+  cloud:
+    config:
+      #http://localhost:8101/config-client-dev.yml
+      #需要从git上读取的配置文件的名称,不需要后缀
+      name: config-client
+      #获取上述文件中的dev的环境
+      profile: dev
+      #分支
+      label: master
+      #config的服务端地址
+      uri: http://localhost:8101
+

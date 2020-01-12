@@ -23,6 +23,10 @@
         <module>springcloud-consumer-dept-feign-8080</module>
         <module>springcloud-consumer-hystrix-dashboard-9001</module>
         <module>springcloud-zuul-9200</module>
+        <module>springcloud-config-server-8101</module>
+        <module>springcloud-config-client-8102</module>
+        <module>springcloud-config-eureka-7001</module>
+        <module>springcloud-config-provider-dept-8001</module>
 
     </modules>
 

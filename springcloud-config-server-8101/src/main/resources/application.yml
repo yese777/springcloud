@@ -1,0 +1,13 @@
+server:
+  port: 8101
+
+spring:
+  application:
+    #服务的名称
+    name: springcloud-config-server
+  cloud:
+    config:
+      server:
+        git:
+          #连接git远程仓库(https的链接),可以访问远程的配置
+          uri: https://github.com/yese777/springcloud-config-server.git
