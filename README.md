@@ -1302,6 +1302,440 @@ public class Zuul_9200_Application {
 
 访问 http://www.yese.com:9200/nt/mydept/dept 
 
+# config分布式配置
+
+## 服务端
+
+### springcloud-config-server-8101
+
+远程的application.yml
+
+```yaml
+spring:
+  profiles:
+    #激活dev环境
+    active: dev
+
+---
+spring:
+  profiles: dev
+  application:
+    name: springcloud-config-dev
+    
+---
+spring:
+  profiles: test
+  application:
+    name: springcloud-config-test
+```
+
+pom
+
+```xml
+        <!--config-server-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-server</artifactId>
+            <version>2.1.5.RELEASE</version>
+        </dependency>
+        <!--web依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+```
+
+application.yml
+
+```yml
+server:
+  port: 8101
+
+spring:
+  application:
+    #服务的名称
+    name: springcloud-config-server
+  cloud:
+    config:
+      server:
+        git:
+          #连接git远程仓库(https的链接),可以访问远程的配置
+          uri: https://github.com/yese777/springcloud-config-server.git
+```
+
+主启动类
+
+```java
+package com.yese;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.config.server.EnableConfigServer;
+
+
+@SpringBootApplication
+@EnableConfigServer
+public class Config_Server_8101_Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Config_Server_8101_Application.class, args);
+    }
+}
+
+```
+
+启动后
+
+Spring Cloud Config 有它的一套访问规则，我们通过这套规则在浏览器上直接访问就可以。
+
+```
+/{application}/{profile}[/{label}]
+/{application}-{profile}.yml
+/{label}/{application}-{profile}.yml
+/{application}-{profile}.properties
+/{label}/{application}-{profile}.properties
+```
+
+{application} 就是应用名称，对应到配置文件上来，就是配置文件的名称部分。
+
+{profile} 就是配置文件的版本，有开发版本、测试环境版本、生产环境版本...
+
+{label} 表示 git 分支，默认是 master 分支
+
+访问 http://localhost:8101/application-test.yml 可以拿到配置信息
+
+## 客户端
+
+### springcloud-config-client-8102
+
+此模块的端口从远程获取,这里随便命名的
+
+远程的config-client.yml
+
+```yaml
+spring:
+  profiles:
+    #激活dev环境
+    active: dev
+
+---
+server:
+  port: 8201
+spring:
+  profiles: dev
+  application:
+    name: springcloud-provider-dept
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+      
+---
+server:
+  port: 8202
+spring:
+  profiles: test
+  application:
+    name: springcloud-provider-dept
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+```
+
+pom
+
+```xml
+        <!-- spring cloud config 客户端包 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+```
+
+application.yml
+
+```yaml
+#application.yml用户级别的配置
+spring:
+  application:
+    name: springcloud-config-client
+```
+
+bootstrap.yml
+
+```yaml
+#bootstrap.yml系统级别的配置
+spring:
+  cloud:
+    config:
+      #http://localhost:8101/config-client-dev.yml
+      #需要从git上读取的配置文件的名称,不需要后缀
+      name: config-client
+      #获取上述文件中的dev的环境
+      profile: dev
+      #分支
+      label: master
+      #config的服务端地址
+      uri: http://localhost:8101
+```
+
+客户端启动后发现端口是8201
+
+访问 http://localhost:8201/config 能够获得配置信息:
+
+ applicationName:springcloud-provider-depteurekaServer:http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/port:8201 
+
+
+
+## 案例
+
+将原来7001和8001的配置放在远程
+
+远程的config-eureka.yml
+
+(照搬原来本地的配置,两个环境只有端口不同)
+
+```yaml
+spring:
+  profiles:
+    #激活dev环境
+    active: dev
+---
+server:
+  port: 7001
+spring:
+  profiles: dev
+  application:
+    name: springcloud-config-eureka
+#Eureka配置
+eureka:
+  instance:
+    #Eureka服务端的实例名称
+    hostname: eureka7001.com
+  client:
+    #表示是否向Eureka服务中心注册自己
+    register-with-eureka: false
+    #false表示自己为注册中心
+    fetch-registry: false
+    service-url:
+      #注册的地址
+      #单机的写法:defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      #集群(关联)
+      defaultZone: http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+      
+---
+server:
+  port: 7011
+spring:
+  profiles: test
+  application:
+    name: springcloud-config-eureka
+#Eureka配置
+eureka:
+  instance:
+    #Eureka服务端的实例名称
+    hostname: eureka7001.com
+  client:
+    #表示是否向Eureka服务中心注册自己
+    register-with-eureka: false
+    #false表示自己为注册中心
+    fetch-registry: false
+    service-url:
+      #注册的地址
+      #单机的写法:defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      #集群(关联)
+      defaultZone: http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+```
+
+
+
+远程的config-dept.yml
+
+(照搬原来本地的配置,两个环境只有端口不同)
+
+```yaml
+spring:
+  profiles:
+    #激活dev环境
+    active: dev
+---
+server:
+  port: 8001
+
+mybatis:
+  #配置别名,pojo的包名
+  type-aliases-package: com.yese.pojo
+  #mapper.xml文件的路径
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  #mybatis核心配置文件
+  config-location: classpath:mybatis/mybatis-config.xml
+
+spring:
+  profiles: dev
+  application:
+    #应用的名称,在eureka中可以查看,服务提供者集群的时候保持服务名称一致
+    name: springcloud-provider-dept
+    #数据库相关
+  datasource:
+    #url和driverclassname是8.0以上版本的写法,新增最后的时区
+    url: jdbc:mysql://192.168.236.135:3306/DB01?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    #修改数据库连接池为druid
+    type: com.alibaba.druid.pool.DruidDataSource
+
+#配置eureka,服务注册到哪里
+eureka:
+  client:
+    service-url:
+      #单机版:defaultZone: http://localhost:7001/eureka/
+      #集群版
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+  instance:
+    #修改Status,描述
+    instance-id: springcloud-provider-dept-8001
+
+#actuator包的具体配置,即点Status的链接进去的具体信息
+info:
+  app.name: springcloud-demo
+  company.name: com.yese
+---
+server:
+  port: 8011
+
+mybatis:
+  #配置别名,pojo的包名
+  type-aliases-package: com.yese.pojo
+  #mapper.xml文件的路径
+  mapper-locations: classpath:mybatis/mapper/*.xml
+  #mybatis核心配置文件
+  config-location: classpath:mybatis/mybatis-config.xml
+
+spring:
+  profiles: test
+  application:
+    #应用的名称,在eureka中可以查看,服务提供者集群的时候保持服务名称一致
+    name: springcloud-provider-dept
+    #数据库相关
+  datasource:
+    #url和driverclassname是8.0以上版本的写法,新增最后的时区
+    url: jdbc:mysql://192.168.236.135:3306/DB01?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    #修改数据库连接池为druid
+    type: com.alibaba.druid.pool.DruidDataSource
+
+#配置eureka,服务注册到哪里
+eureka:
+  client:
+    service-url:
+      #单机版:defaultZone: http://localhost:7001/eureka/
+      #集群版
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/,http://eureka7003.com:7003/eureka/
+  instance:
+    #修改Status,描述
+    instance-id: springcloud-provider-dept-8001
+
+#actuator包的具体配置,即点Status的链接进去的具体信息
+info:
+  app.name: springcloud-demo
+  company.name: com.yese
+
+```
+
+仿照原来的7001和8001再创建两个模块
+
+### springcloud-config-eureka-7001
+
+新增依赖
+
+```xml
+        <!-- spring cloud config 客户端包 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+```
+
+application.yml(原来的内容全部删掉)
+
+```yaml
+spring:
+  application:
+    name: springcloud-config-eureka-7001
+```
+
+bootstrap.yml
+
+```yaml
+#bootstrap.yml系统级别的配置
+spring:
+  cloud:
+    config:
+      #需要从git上读取的配置文件的名称,不需要后缀
+      name: config-eureka
+      #获取上述文件中的dev的环境
+      profile: dev
+      #分支
+      label: master
+      #config的服务端地址
+      uri: http://localhost:8101
+```
+
+启动项目,访问 http://localhost:7001/ 和原来的效果一样
+
+### springcloud-config-provider-dept-8001
+
+新增依赖
+
+```xml
+        <!-- spring cloud config 客户端包 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+```
+
+application.yml(原来的内容全部删掉)
+
+```yaml
+spring:
+  application:
+    name: springcloud-config-provider-dept-8001
+```
+
+bootstrap.yml
+
+```yaml
+#bootstrap.yml系统级别的配置
+spring:
+  cloud:
+    config:
+      #需要从git上读取的配置文件的名称,不需要后缀
+      name: config-dept
+      #获取上述文件中的dev的环境
+      profile: dev
+      #分支
+      label: master
+      #config的服务端地址
+      uri: http://localhost:8101
+```
+
+启动项目,访问  http://localhost:8001/dept  和原来的效果一样
+
 
 
 
