@@ -8,21 +8,44 @@
     <artifactId>springcloud</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
+        <!--实体 api -->
         <module>springcloud-api</module>
+
+        <!--服务提供者集群-->
         <module>springcloud-provider-dept-8001</module>
+        <module>springcloud-provider-dept-8002</module>
+        <module>springcloud-provider-dept-8003</module>
+
+        <!--服务消费者,整合 ribbon 负载均衡-->
         <module>springcloud-consumer-dept-8080</module>
+
+        <!--eureka集群-->
         <module>springcloud-eureka-7001</module>
         <module>springcloud-eureka-7002</module>
         <module>springcloud-eureka-7003</module>
-        <module>springcloud-provider-dept-8002</module>
-        <module>springcloud-provider-dept-8003</module>
+
+        <!--服务消费者,整合 feign 负载均衡-->
         <module>springcloud-consumer-dept-feign-8080</module>
+
+        <!--服务熔断hystrix-->
         <module>springcloud-provider-dept-hystrix-8001</module>
+
+        <!--hystrix-dashboard监控-->
         <module>springcloud-consumer-hystrix-dashboard-9001</module>
+
+        <!--zuul路由网关-->
         <module>springcloud-zuul-9200</module>
+
+        <!--config 服务端-->
         <module>springcloud-config-server-3344</module>
+
+        <!--config 客户端-->
         <module>springcloud-config-client-3355</module>
+
+        <!--eureka配置文件存放 git 示例-->
         <module>springcloud-config-eureka-7001</module>
+
+        <!--服务提供者配置文件存放 git 示例-->
         <module>springcloud-config-provider-dept-8001</module>
     </modules>
 
