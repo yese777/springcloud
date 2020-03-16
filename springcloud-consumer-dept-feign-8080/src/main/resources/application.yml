@@ -12,5 +12,5 @@ eureka:
 
 feign:
   hystrix:
-    #开启降级
+    #开启hystrix服务降级
     enabled: true

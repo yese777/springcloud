@@ -8,6 +8,7 @@
     <select id="getDeptById" resultType="dept">
         select * from dept where id=#{id};
     </select>
+
     <select id="getDepts" resultType="dept">
         select * from dept;
     </select>

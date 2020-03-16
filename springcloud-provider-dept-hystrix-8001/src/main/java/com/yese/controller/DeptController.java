@@ -16,10 +16,12 @@ public class DeptController {
     private DeptService deptService;
 
     @GetMapping("/dept/{id}")
-    @HystrixCommand(fallbackMethod = "hystrixGetDeptById")//该方法调用失败就执行hystrixGetDeptById这个方法
+    //如果该方法调用失败就执行fallbackMethod指定的hystrixGetDeptById这个方法
+    @HystrixCommand(fallbackMethod = "hystrixGetDeptById")
     public Dept getDeptById(@PathVariable("id") Integer id) {
         Dept dept = deptService.getDeptById(id);
-        //模拟出错
+
+        // 此处抛出异常来模拟出错
         if (dept == null) {
             throw new RuntimeException("id为:" + id + "的员工不存在");
         }
@@ -35,3 +37,4 @@ public class DeptController {
     }
 
 }
+

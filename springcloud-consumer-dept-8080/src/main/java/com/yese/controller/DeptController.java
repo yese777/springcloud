@@ -16,6 +16,7 @@ public class DeptController {
     //配置了ribbon之后,访问的地址应该是一个变量,通过服务名来访问
     private static final String REST_URL_PREFIX = "http://SPRINGCLOUD-PROVIDER-DEPT";
 
+    // RestTemplate提供多种便捷访问远程 http 服务的方法,简单的 restful 服务模板
     @Autowired
     private RestTemplate restTemplate;
 
@@ -45,3 +46,4 @@ public class DeptController {
         restTemplate.put(REST_URL_PREFIX + "/dept", dept, Integer.class);
     }
 }
+

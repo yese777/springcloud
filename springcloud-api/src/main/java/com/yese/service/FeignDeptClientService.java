@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 使用feign代替ribbon
+ * 使用feign代替ribbon来完成负载均衡,如果不使用 feign 不用写
  */
 //value是服务的名称,原来是在消费者的controller里写死的
+// fallbackFactory是Hystrix服务降级时需要修改的
 @FeignClient(value = "SPRINGCLOUD-PROVIDER-DEPT", fallbackFactory = FeignDeptClientServiceFallbackFactory.class)
 @Component
 public interface FeignDeptClientService {

@@ -14,3 +14,4 @@ eureka:
     service-url:
       #注册的地址
       defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7003.com:7003/eureka/
+

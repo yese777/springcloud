@@ -43,7 +43,7 @@ public class DeptController {
 
     //------------------以下为团队开发中可能会用得到的,并不影响正常使用,获取一些服务的具体信息
     @Autowired
-    //springcloud的包
+    // 注意导springcloud的包
     private DiscoveryClient client;
 
     @GetMapping("/dept/discovery")
@@ -65,3 +65,4 @@ public class DeptController {
         return this.client;
     }
 }
+

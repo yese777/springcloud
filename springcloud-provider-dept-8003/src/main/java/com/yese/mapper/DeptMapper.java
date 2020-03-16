@@ -8,6 +8,7 @@ import java.util.List;
 
 @Repository
 public interface DeptMapper {
+
     Dept getDeptById(@Param("id") Integer id);
 
     List<Dept> getDepts();
@@ -17,4 +18,5 @@ public interface DeptMapper {
     int deleteDept(@Param("id") Integer id);
 
     int updateDept(Dept dept);
+
 }

@@ -12,8 +12,8 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @MapperScan("com.yese.mapper")//扫描mapper接口
-@EnableEurekaClient//在服务启动后自动注册到eureka中
 @EnableDiscoveryClient//Discovery团队开发获取服务的具体信息
+@EnableEurekaClient//ribbon和eureka整合以后,客户端可以直接调用,不用关心ip地址和端口号
 @EnableCircuitBreaker//添加对熔断的支持(断路器)
 public class Provider_Dept_Hystrix_8001_Application {
 

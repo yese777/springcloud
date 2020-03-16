@@ -2,11 +2,13 @@
 spring:
   cloud:
     config:
+      #之前在浏览器中直接能访问到配置文件的地址:http://localhost:3344/config-eureka-dev.yml
+      #config的服务端地址,就是刚刚创建的springcloud-config-server-3344的地址
+      uri: http://localhost:3344
       #需要从git上读取的配置文件的名称,不需要后缀
       name: config-eureka
       #获取上述文件中的dev的环境
       profile: dev
       #分支
       label: master
-      #config的服务端地址
-      uri: http://localhost:8101
+

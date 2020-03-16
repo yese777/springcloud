@@ -16,10 +16,10 @@ spring:
     #数据库相关
   datasource:
     #url和driverclassname是8.0以上版本的写法,新增最后的时区
-    url: jdbc:mysql://192.168.236.135:3306/DB01?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://47.100.230.188:3306/db01?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: 123456
+    password: 1321810135
     #修改数据库连接池为druid
     type: com.alibaba.druid.pool.DruidDataSource
 

@@ -12,6 +12,12 @@
     <artifactId>springcloud-consumer-dept-feign-8080</artifactId>
 
     <dependencies>
+        <!--feign-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-feign</artifactId>
+            <version>1.4.7.RELEASE</version>
+        </dependency>
         <!--ribbon-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -24,17 +30,16 @@
             <artifactId>spring-cloud-starter-eureka</artifactId>
             <version>1.4.7.RELEASE</version>
         </dependency>
-
-        <!--web依赖-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
         <!--需要用到实体类-->
         <dependency>
             <artifactId>springcloud-api</artifactId>
             <groupId>com.yese</groupId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--web依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <!--热部署-->
         <dependency>

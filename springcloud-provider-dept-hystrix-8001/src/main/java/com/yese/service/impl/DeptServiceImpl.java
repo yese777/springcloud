@@ -11,7 +11,6 @@ import java.util.List;
 @Service
 public class DeptServiceImpl implements DeptService {
 
-
     @Autowired
     private DeptMapper deptMapper;
 

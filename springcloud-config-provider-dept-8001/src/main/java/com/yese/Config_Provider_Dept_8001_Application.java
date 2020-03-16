@@ -8,12 +8,12 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 
 @SpringBootApplication
 @MapperScan("com.yese.mapper")//扫描mapper接口
-@EnableEurekaClient//在服务启动后自动注册到eureka中
 @EnableDiscoveryClient//Discovery团队开发获取服务的具体信息
-public class Provider_Dept_8001_Application {
+@EnableEurekaClient//ribbon和eureka整合以后,客户端可以直接调用,不用关心ip地址和端口号
+public class Config_Provider_Dept_8001_Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(Provider_Dept_8001_Application.class, args);
+        SpringApplication.run(Config_Provider_Dept_8001_Application.class, args);
     }
 
 }

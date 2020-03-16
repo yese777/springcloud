@@ -5,6 +5,7 @@ import com.yese.pojo.Dept;
 import java.util.List;
 
 public interface DeptService {
+
     Dept getDeptById(Integer id);
 
     List<Dept> getDepts();
@@ -14,4 +15,5 @@ public interface DeptService {
     int deleteDept(Integer id);
 
     int updateDept(Dept dept);
+
 }

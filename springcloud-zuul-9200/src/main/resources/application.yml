@@ -15,7 +15,6 @@ eureka:
     #修改Status,描述
     instance-id: springcloud-zuul-9200
 
-
 #actuator包的具体配置,即点Status的链接进去的具体信息
 info:
   app.name: springcloud-zuul
@@ -27,9 +26,9 @@ zuul:
     mydept.serviceId: SPRINGCLOUD-PROVIDER-DEPT
     #将该服务的访问地址映射
     mydept.path: /mydept/**
-  #不能使用以下路径访问
+  #不能使用原始的带服务名的方式访问
   #ignored-services: SPRINGCLOUD-PROVIDER-DEPT
-  #服务很多,全部影藏
+  #如果服务很多,可以全部影藏
   ignored-services: "*"
   #添加统一的前缀(可以不设置)
   prefix: /nt

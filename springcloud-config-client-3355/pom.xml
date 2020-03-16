@@ -9,19 +9,22 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>springcloud-config-server-8101</artifactId>
+    <artifactId>springcloud-config-client-3355</artifactId>
+
     <dependencies>
-        <!--config-server-->
+        <!-- spring cloud config 客户端包 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-server</artifactId>
+            <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
-        <!--web依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
     </dependencies>
-
 </project>

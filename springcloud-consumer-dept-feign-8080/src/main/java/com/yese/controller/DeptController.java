@@ -10,6 +10,7 @@ import java.util.List;
 @RestController
 public class DeptController {
 
+    // 注入springcloud-api中的 service 接口
     @Autowired
     private FeignDeptClientService feignDeptClientService;
 
@@ -38,3 +39,4 @@ public class DeptController {
         feignDeptClientService.updateDept(dept);
     }
 }
+

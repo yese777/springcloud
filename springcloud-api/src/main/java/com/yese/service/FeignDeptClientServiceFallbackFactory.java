@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-//实现FallbackFactory接口
+// 实现FallbackFactory接口
 public class FeignDeptClientServiceFallbackFactory implements FallbackFactory {
 
-    //重写create方法,返回服务接口,重写接口中的方法,这里就演示一个
+    // 重写create方法,返回springcloud-api该服务的 service 接口,重写接口中的方法,这里就演示一个getDeptById()
     @Override
     public FeignDeptClientService create(Throwable cause) {
         return new FeignDeptClientService() {
@@ -44,3 +44,4 @@ public class FeignDeptClientServiceFallbackFactory implements FallbackFactory {
         };
     }
 }
+
